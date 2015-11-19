@@ -181,9 +181,126 @@ nodist_tmux_SOURCES = osdep-@PLATFORM@.c
 
 tmux_CFLAGS = $(AM_CFLAGS)
 
-lib_LTLIBRARIES = libtmux.la
-libtmux_la_SOURCES = tmux.c
-libtmux_la_LDFLAGS = -version-info 0:0:0
+lib_LTLIBRARIES = libtmux.a
+libtmux_a_SOURCES = \
+	alerts.c \
+	arguments.c \
+	attributes.c \
+	cfg.c \
+	client.c \
+	cmd-attach-session.c \
+	cmd-bind-key.c \
+	cmd-break-pane.c \
+	cmd-capture-pane.c \
+	cmd-choose-buffer.c \
+	cmd-choose-client.c \
+	cmd-choose-tree.c \
+	cmd-clear-history.c \
+	cmd-command-prompt.c \
+	cmd-confirm-before.c \
+	cmd-copy-mode.c \
+	cmd-detach-client.c \
+	cmd-display-message.c \
+	cmd-display-panes.c \
+	cmd-find.c \
+	cmd-find-window.c \
+	cmd-if-shell.c \
+	cmd-join-pane.c \
+	cmd-kill-pane.c \
+	cmd-kill-server.c \
+	cmd-kill-session.c \
+	cmd-kill-window.c \
+	cmd-list-buffers.c \
+	cmd-list-clients.c \
+	cmd-list-keys.c \
+	cmd-list-panes.c \
+	cmd-list-sessions.c \
+	cmd-list-windows.c \
+	cmd-list.c \
+	cmd-load-buffer.c \
+	cmd-lock-server.c \
+	cmd-move-window.c \
+	cmd-new-session.c \
+	cmd-new-window.c \
+	cmd-paste-buffer.c \
+	cmd-pipe-pane.c \
+	cmd-queue.c \
+	cmd-refresh-client.c \
+	cmd-rename-session.c \
+	cmd-rename-window.c \
+	cmd-resize-pane.c \
+	cmd-respawn-pane.c \
+	cmd-respawn-window.c \
+	cmd-rotate-window.c \
+	cmd-run-shell.c \
+	cmd-save-buffer.c \
+	cmd-select-layout.c \
+	cmd-select-pane.c \
+	cmd-select-window.c \
+	cmd-send-keys.c \
+	cmd-set-buffer.c \
+	cmd-set-environment.c \
+	cmd-set-option.c \
+	cmd-show-environment.c \
+	cmd-show-messages.c \
+	cmd-show-options.c \
+	cmd-source-file.c \
+	cmd-split-window.c \
+	cmd-string.c \
+	cmd-swap-pane.c \
+	cmd-swap-window.c \
+	cmd-switch-client.c \
+	cmd-unbind-key.c \
+	cmd-wait-for.c \
+	cmd.c \
+	colour.c \
+	control.c \
+	control-notify.c \
+	environ.c \
+	format.c \
+	grid-view.c \
+	grid.c \
+	input-keys.c \
+	input.c \
+	job.c \
+	key-bindings.c \
+	key-string.c \
+	layout-custom.c \
+	layout-set.c \
+	layout.c \
+	log.c \
+	mode-key.c \
+	names.c \
+	notify.c \
+	options-table.c \
+	options.c \
+	paste.c \
+	proc.c \
+	resize.c \
+	screen-redraw.c \
+	screen-write.c \
+	screen.c \
+	server-client.c \
+	server-fn.c \
+	server.c \
+	session.c \
+	signal.c \
+	status.c \
+	style.c \
+	tmux.c \
+	tty-acs.c \
+	tty-keys.c \
+	tty-term.c \
+	tty.c \
+	utf8.c \
+	window-choose.c \
+	window-clock.c \
+	window-copy.c \
+	window.c \
+	xmalloc.c \
+	xterm-keys.c
+libtmux_a_LDFLAGS = -version-info 0:0:0
+libtmux_a_CFLAGS = -fPIC
 
 # Pile in all the compat/ stuff that is needed.
 if NO_FORKPTY
@@ -256,3 +373,7 @@ install-exec-hook:
 	$(mkdir_p) $(DESTDIR)$(mandir)/man1
 	$(INSTALL_DATA) $(srcdir)/tmux.1.@MANFORMAT@ \
 		$(DESTDIR)$(mandir)/man1/tmux.1
+
+# Create python library
+build-tmuxpy:
+	clang -D VERSION=2.1 `pkgconf --cflags --libs python2 libevent ncurses` -I ./ -shared -fPIC  -o tmuxpy.so tmuxpy.c tty-term.c  tmux.c options-table.c compat/getopt.c names.c session.c notify.c client.c  server-client.c server.c job.c cfg.c window-copy.c mode-key.c cmd-find.c  window.c grid.c control.c status.c cmd-list-keys.c cmd.c key-bindings.c cmd-attach-session.c cmd-bind-key.c cmd-break-pane.c cmd-capture-pane.c cmd-choose-buffer.c window-choose.c cmd-choose-client.c cmd-choose-tree.c cmd-clear-history.c cmd-copy-mode.c window-clock.c cmd-command-prompt.c cmd-confirm-before.c cmd-set-buffer.c cmd-detach-client.c cmd-display-message.c cmd-display-panes.c cmd-find-window.c cmd-new-session.c cmd-if-shell.c cmd-join-pane.c cmd-kill-pane.c cmd-kill-server.c cmd-kill-session.c cmd-kill-window.c cmd-select-pane.c cmd-select-window.c cmd-move-window.c cmd-list-buffers.c cmd-list-clients.c cmd-list-panes.c cmd-list-sessions.c cmd-list-windows.c cmd-load-buffer.c cmd-lock-server.c cmd-new-window.c cmd-select-layout.c cmd-paste-buffer.c cmd-pipe-pane.c cmd-refresh-client.c cmd-rename-session.c cmd-rename-window.c cmd-resize-pane.c cmd-respawn-pane.c cmd-respawn-window.c cmd-rotate-window.c cmd-run-shell.c cmd-save-buffer.c cmd-send-keys.c cmd-show-messages.c cmd-set-environment.c cmd-set-option.c cmd-show-environment.c cmd-show-options.c cmd-source-file.c cmd-split-window.c cmd-swap-pane.c cmd-swap-window.c cmd-switch-client.c cmd-unbind-key.c cmd-wait-for.c tty.c screen-write.c options.c xmalloc.c utf8.c control-notify.c grid-view.c layout.c compat/b64_ntop.c server-fn.c style.c tty-keys.c screen.c proc.c compat/imsg.c input.c signal.c compat/imsg-buffer.c  key-string.c input-keys.c colour.c format.c osdep-freebsd.c layout-set.c cmd-string.c cmd-queue.c layout-custom.c cmd-list.c attributes.c paste.c environ.c arguments.c alerts.c log.c compat/vis.c resize.c tty-acs.c xterm-keys.c screen-redraw.c
