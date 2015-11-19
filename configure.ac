@@ -8,6 +8,8 @@ AM_INIT_AUTOMAKE([foreign subdir-objects])
 
 AC_CANONICAL_HOST
 
+LT_INIT
+
 # When CFLAGS isn't set at this stage and gcc is detected by the macro below,
 # autoconf will automatically use CFLAGS="-O2 -g". Prevent that by using an
 # empty default.

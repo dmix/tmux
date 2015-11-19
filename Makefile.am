@@ -179,6 +179,12 @@ dist_tmux_SOURCES = \
 	xterm-keys.c
 nodist_tmux_SOURCES = osdep-@PLATFORM@.c
 
+tmux_CFLAGS = $(AM_CFLAGS)
+
+lib_LTLIBRARIES = libtmux.la
+libtmux_la_SOURCES = tmux.c
+libtmux_la_LDFLAGS = -version-info 0:0:0
+
 # Pile in all the compat/ stuff that is needed.
 if NO_FORKPTY
 nodist_tmux_SOURCES += compat/forkpty-@PLATFORM@.c
