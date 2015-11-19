@@ -30,7 +30,7 @@ tmuxgetshell(PyObject* self)
 static PyMethodDef HelloMethods[] =
 {
      {"say_hello", say_hello, METH_VARARGS, "Greet somebody."},
-     {"tmuxgetshell", tmuxgetshell, METH_NOARGS, "Get user's shell"},
+     {"getshell", tmuxgetshell, METH_NOARGS, "Get user's shell"},
      {NULL, NULL, 0, NULL}
 };
 
