@@ -15,9 +15,20 @@ say_hello(PyObject* self, PyObject* args)
 }
 
 static PyObject*
-tmuxgetshell(PyObject* self)
+tmx_getshell(PyObject* self)
 {
+    const char* shell;
 
+    shell = getshell();
+
+    printf("your shell is %s!\n", shell);
+
+    Py_RETURN_NONE;
+}
+
+static PyObject*
+tmx_list_panes(PyObject* self)
+{
     const char* shell;
 
     shell = getshell();
@@ -30,7 +41,7 @@ tmuxgetshell(PyObject* self)
 static PyMethodDef HelloMethods[] =
 {
      {"say_hello", say_hello, METH_VARARGS, "Greet somebody."},
-     {"getshell", tmuxgetshell, METH_NOARGS, "Get user's shell"},
+     {"getshell", tmx_getshell, METH_NOARGS, "Get user's shell"},
      {NULL, NULL, 0, NULL}
 };
 
