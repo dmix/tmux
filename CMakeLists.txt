@@ -157,7 +157,7 @@ check_function_exists(stravis HAVE_STRAVIS)
 if(HAVE_STRAVIS)
 	add_definitions(-DHAVE_VIS)
 else()
-	set(tmux_COMPAT ${tmux_COMPAT} compat/vis.c)
+	set(tmux_COMPAT ${tmux_COMPAT} compat/vis.c compat/unvis.c)
 endif()
 
 
