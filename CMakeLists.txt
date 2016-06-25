@@ -102,12 +102,18 @@ endif()
 
 check_symbol_exists(strlcat      "${CFG_HEADERS}" HAVE_STRLCAT)
 if (HAVE_STRLCAT)
-  add_definitions(-DHAVE_STRLCAT=1)
+	add_definitions(-DHAVE_STRLCAT=1)
+else()
+	set(tmux_COMPAT ${tmux_COMPAT} compat/strlcat.c)
 endif ()
-check_symbol_exists(strlcpy      "${CFG_HEADERS}" HAVE_STRLCPY)
 
+
+
+check_symbol_exists(strlcpy      "${CFG_HEADERS}" HAVE_STRLCPY)
 if (HAVE_STRLCPY)
-  add_definitions(-DHAVE_STRLCPY=1)
+	add_definitions(-DHAVE_STRLCPY)
+else()
+	set(tmux_COMPAT ${tmux_COMPAT} compat/strlcpy.c)
 endif ()
 
 
@@ -150,6 +156,49 @@ if(HAVE_SETPROCTITLE)
 else()
 	set(tmux_COMPAT ${tmux_COMPAT} compat/setproctitle.c)
 endif()
+
+
+
+check_function_exists(setproctitle HAVE_STRSEP)
+if(HAVE_STRSEP)
+	add_definitions(-DHAVE_STRSEP)
+else()
+	set(tmux_COMPAT ${tmux_COMPAT} compat/strsep.c)
+endif()
+
+
+check_function_exists(setproctitle HAVE_ASPRINTF)
+if(HAVE_ASPRINTF)
+	add_definitions(-DHAVE_ASPRINTF)
+else()
+	set(tmux_COMPAT ${tmux_COMPAT} compat/asprintf.c)
+endif()
+
+
+check_function_exists(setproctitle HAVE_FGETLN)
+if(HAVE_FGETLN)
+	add_definitions(-DHAVE_FGETLN)
+else()
+	set(tmux_COMPAT ${tmux_COMPAT} compat/fgetln.c)
+endif()
+
+
+check_function_exists(setproctitle HAVE_FPARSELN)
+if(HAVE_FPARSELN)
+	add_definitions(-DHAVE_FPARSELN)
+else()
+	set(tmux_COMPAT ${tmux_COMPAT} compat/fparseln.c)
+endif()
+
+
+
+check_function_exists(setproctitle HAVE_GETPROGNAME)
+if(HAVE_GETPROGNAME)
+	add_definitions(-DHAVE_GETPROGNAME)
+else()
+	set(tmux_COMPAT ${tmux_COMPAT} compat/getprogname.c)
+endif()
+
 
 
 # Look for stravis, compat/{vis,unvis}.c used if missing.
