@@ -167,6 +167,14 @@ else()
 endif()
 
 
+check_function_exists(setproctitle HAVE_CFMAKERAW)
+if(HAVE_CFMAKERAW)
+	add_definitions(-DHAVE_CFMAKERAW)
+else()
+	set(tmux_COMPAT ${tmux_COMPAT} compat/cfmakeraw.c)
+endif()
+
+
 check_function_exists(setproctitle HAVE_ASPRINTF)
 if(HAVE_ASPRINTF)
 	add_definitions(-DHAVE_ASPRINTF)
@@ -211,7 +219,7 @@ endif()
 
 check_function_exists(stravis HAVE_STRCASESTR)
 if(HAVE_STRCASESTR)
-        add_definitions(-DHAVE_STRCASESTR)
+	add_definitions(-DHAVE_STRCASESTR)
 else()
 	set(tmux_COMPAT ${tmux_COMPAT} compat/strcasestr.c)
 endif()
