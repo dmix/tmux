@@ -80,7 +80,7 @@ add_cond(CMAKE_REQUIRED_LIBRARIES HAVE_LIBUTIL "${LIBUTIL_LIBRARIES}")
 
 
 
-CHECK_FUNCTION_EXISTS(forkpty HAS_FORKPTY)
+CHECK_FUNCTION_EXISTS(forkpty HAVE_FORKPTY)
 check_include_file(pty.h HAVE_PTY_H)
 add_cond(CFG_HEADERS HAVE_PTY_H pty.h)
 
@@ -160,6 +160,14 @@ else()
 	set(tmux_COMPAT ${tmux_COMPAT} compat/vis.c compat/unvis.c)
 endif()
 
+check_function_exists(stravis HAVE_STRCASESTR)
+if(HAVE_STRCASESTR)
+        add_definitions(-DHAVE_STRCASESTR)
+else()
+	set(tmux_COMPAT ${tmux_COMPAT} compat/strcasestr.c)
+endif()
+
+
 
 # Look for strtonum, compat/strtonum.c used if missing.
 check_function_exists(strtonum HAVE_STRTONUM)
@@ -173,7 +181,18 @@ endif()
 
 check_symbol_exists(openat       "${CFG_HEADERS}" HAVE_OPENAT)
 if(HAVE_OPENAT)
-	list(APPEND CMAKE_REQUIRED_DEFINITIONS -DHAVE_OPENAT)
+	add_definitions(-DHAVE_STRTONUM)
+else()
+	set(tmux_COMPAT ${tmux_COMPAT} compat/openat.c)
+endif()
+
+
+
+check_function_exists(setenv HAVE_SETENV)
+if(HAVE_SETENV)
+  add_definitions(-DHAVE_SETENV)
+else()
+	set(tmux_COMPAT ${tmux_COMPAT} compat/setenv.c)
 endif()
 
 
@@ -210,7 +229,6 @@ find_package(Libevent REQUIRED)
 include_directories(${CURSES_INCLUDE_DIR} ${LIBEVENT_INCLUDE_DIRS})
 
 include_directories("./")
-# file (GLOB tmux_SOURCES tmux.c osdep-darwin.c forkpty-darwin.c client.c)
 
 file (GLOB tmux_SOURCES
 	alerts.c
@@ -341,58 +359,44 @@ if(WIN32)
 elseif(UNIX AND NOT APPLE)
   if(CMAKE_SYSTEM_NAME MATCHES ".*Linux")
     set(LINUX TRUE)
-  elseif(CMAKE_SYSTEM_NAME MATCHES "kFreeBSD.*")
-    set(FREEBSD TRUE)
+    set(PLATFORM linux)
   elseif(CMAKE_SYSTEM_NAME MATCHES "kNetBSD.*|NetBSD.*")
     set(NETBSD TRUE)
+    set(PLATFORM netbsd)
   elseif(CMAKE_SYSTEM_NAME MATCHES "kOpenBSD.*|OpenBSD.*")
     set(OPENBSD TRUE)
+    set(PLATFORM openbsd)
   elseif(CMAKE_SYSTEM_NAME MATCHES "kFreeBSD.*|FreeBSD.*")
     set(FREEBSD TRUE)
+    set(PLATFORM freebsd)
   elseif(CMAKE_SYSTEM_NAME MATCHES "DragonFly.*")
     set(DRAGONFLY TRUE)
+    set(PLATFORM dragonfly)
   elseif(CMAKE_SYSTEM_NAME MATCHES "Solaris.*|SunOS.*")
     set(SOLARIS TRUE)
+    set(PLATFORM solaris)
   elseif(CMAKE_SYSTEM_NAME MATCHES "HP-UX.*")
     set(HPUX TRUE)
+    set(PLATFORM hpux)
   elseif(CMAKE_SYSTEM_NAME MATCHES "AIX.*")
     set(AIX TRUE)
+    set(PLATFORM aix)
   endif()
 elseif(APPLE)
   if(CMAKE_SYSTEM_NAME MATCHES ".*Darwin.*")
     set(DARWIN TRUE)
-  elseif(CMAKE_SYSTEM_NAME MATCHES ".*MacOS.*")
-    set(MACOSX TRUE)
+    set(PLATFORM darwin)
   endif()
+else()
+    set(PLATFORM unknown)
 endif()
 
 # OS-dependent C files
-if (DARWIN)
-	set(tmux_COMPAT ${tmux_COMPAT} osdep-darwin.c)
-elseif(LINUX)
-	set(tmux_COMPAT ${tmux_COMPAT} osdep-linux.c)
-elseif(CYGWIN)
-	set(tmux_COMPAT ${tmux_COMPAT} osdep-cygwin.c)
-elseif(DRAGONFLY)
-	set(tmux_COMPAT ${tmux_COMPAT} osdep-dragonfly.c)
-elseif(FREEBSD)
-	set(tmux_COMPAT ${tmux_COMPAT} osdep-freebsd.c)
-elseif(NETBSD)
-	set(tmux_COMPAT ${tmux_COMPAT} osdep-netbsd.c)
-elseif(OPENBSD)
-	set(tmux_COMPAT ${tmux_COMPAT} osdep-openbsd.c)
-elseif(SUNOS)
-	set(tmux_COMPAT ${tmux_COMPAT} osdep-sunos.c)
-elseif(HPUX)
-	set(tmux_COMPAT ${tmux_COMPAT} osdep-hpux.c)
-elseif(AIX)
-	set(tmux_COMPAT ${tmux_COMPAT} osdep-aix.c)
-else()
-	set(tmux_COMPAT ${tmux_COMPAT} osdep-unknown.c)
+set(tmux_COMPAT ${tmux_COMPAT} osdep-${PLATFORM}.c)
+
+if (NOT HAVE_FORKPTY)
+  set(tmux_COMPAT ${tmux_COMPAT} compat/forkpty-${PLATFORM}.c)
 endif()
-
-
-
 
 #
 # GET VERSION
