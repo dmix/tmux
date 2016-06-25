@@ -51,7 +51,16 @@ check_include_file(string.h HAVE_STRING_H)
 add_cond(CFG_HEADERS HAVE_STRING_H string.h)
 
 check_include_file(sys/queue.h HAVE_QUEUE_H)
+check_include_file(util.h HAVE_UTIL_H)
+check_include_file(libutil.h HAVE_LIBUTIL_H)
+check_include_file(dirent.h HAVE_DIRENT_H)
+check_include_file(ndir.h HAVE_NDIR_H)
+check_include_file(paths.h HAVE_PATHS_H)
+check_include_file(pty.h HAVE_PTY_H)
 check_include_file(sys/tree.h HAVE_TREE_H)
+check_include_file(sys/ndir.h HAVE_SYS_NDIR_H)
+check_include_file(sys/dir.h HAVE_SYS_DIR_H)
+check_include_file(term.h HAVE_TERM_H)
 check_include_file(bitstring.h HAVE_BITSTRING_H)
 check_include_file(path.h HAVE_PATH_H)
 check_include_file(fcntl.h HAVE_FCNTL_H)
@@ -71,7 +80,6 @@ add_cond(CMAKE_REQUIRED_LIBRARIES HAVE_LIBUTIL "${LIBUTIL_LIBRARIES}")
 
 
 
-list(APPEND CMAKE_REQUIRED_LIBRARIES util)
 CHECK_FUNCTION_EXISTS(forkpty HAS_FORKPTY)
 check_include_file(pty.h HAVE_PTY_H)
 add_cond(CFG_HEADERS HAVE_PTY_H pty.h)
@@ -408,5 +416,5 @@ add_definitions(-DVERSION="${tmux_VERSION}")
 
 
 add_executable(tmux ${tmux_COMPAT} ${tmux_SOURCES})
-target_link_libraries(tmux ${CURSES_LIBRARY} ${LIBEVENT_LIBRARIES})
+target_link_libraries(tmux ${CURSES_LIBRARY} ${LIBEVENT_LIBRARIES} ${LIBUTIL_LIBRARIES})
 install(TARGETS tmux RUNTIME DESTINATION ${BIN_DIR})
