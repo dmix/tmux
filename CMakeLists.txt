@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.6)
+cmake_minimum_required(VERSION 2.8.12)
 project(tmux)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${tmux_SOURCE_DIR}/cmake")
@@ -25,16 +25,17 @@ include_directories("./")
 file (GLOB tmux_SOURCES tmux.c osdep-darwin.c forkpty-darwin.c )
 
 file (STRINGS "${CMAKE_CURRENT_SOURCE_DIR}/configure.ac" CONFIGURE_AC REGEX "AC_INIT\\(.*\\)" )
-string(REGEX REPLACE "AC_INIT\\(\\[.*\\], \\[([0-9]+\\.[0-9]+\\.[0-9]+(-dev)?)\\]\\)" "\\1" PACKAGE_VERSION ${CONFIGURE_AC})
+string(REGEX REPLACE "AC_INIT\\(.*, ([0-9]+\\.[0-9]+(-dev)?)\\)" "\\1" PACKAGE_VERSION ${CONFIGURE_AC})
 
 message(STATUS "Parsed tmux package version: ${PACKAGE_VERSION}")
 
 # These are internal to CMake
-string(REGEX REPLACE "([0-9]+\\.[0-9]+\\.[0-9]+)(-dev)?" "\\1" tmux_VERSION ${PACKAGE_VERSION})
-string(REGEX REPLACE "([0-9]+)\\.[0-9]+\\.[0-9]+" "\\1" tmux_VERSION_MAJOR ${tmux_VERSION})
-string(REGEX REPLACE "[0-9]+\\.([0-9])+\\.[0-9]+" "\\1" tmux_VERSION_MINOR ${tmux_VERSION})
-string(REGEX REPLACE "[0-9]+\\.[0-9]+\\.([0-9]+)" "\\1" tmux_VERSION_PATCH ${tmux_VERSION})
-message(STATUS "Parsed tmux version: ${tmux_VERSION} (${tmux_VERSION_MAJOR}.${tmux_VERSION_MINOR}.${tmux_VERSION_PATCH})")
+string(REGEX REPLACE "([0-9]+\\.[0-9]+)(-dev)?" "\\1" tmux_VERSION ${PACKAGE_VERSION})
+string(REGEX REPLACE "([0-9]+)\\.[0-9]+" "\\1" tmux_VERSION_MAJOR ${tmux_VERSION})
+string(REGEX REPLACE "[0-9]+\\.([0-9])+" "\\1" tmux_VERSION_MINOR ${tmux_VERSION})
+message(STATUS "Parsed tmux version: ${tmux_VERSION} (${tmux_VERSION_MAJOR}.${tmux_VERSION_MINOR})")
+
+add_definitions(-DVERSION="${tmux_VERSION}")
 
 
 add_executable(tmux ${tmux_SOURCES})
